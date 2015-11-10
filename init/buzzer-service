@@ -1,0 +1,39 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          buzzer-service
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start/stop AllJoyn Buzzer Service
+### END INIT INFO
+
+logger "AllJoyn Buzzer Service: Start script executed"
+SERVICE_PATH="/usr/sbin/buzzer-service"
+
+case "$1" in
+  start)
+    logger "AllJoyn Buzzer Service: Starting"
+    echo "Starting AllJoyn Buzzer Service..."
+    $SERVICE_PATH > /var/log/buzzer-service 2>&1 &
+    echo $! > /var/run/buzzer-service.pid
+    ;;
+  stop)
+    if [ -e /var/run/buzzer-service.pid ]; then
+        logger "AllJoyn Buzzer Service: Stopping"
+        echo "Stopping AllJoyn Buzzer Service..."
+        kill `cat /var/run/buzzer-service.pid`
+        rm /var/run/buzzer-service.pid
+    else
+        logger "AllJoyn Buzzer Service: not running"
+        echo "AllJoyn Buzzer Service: already stopped..."
+    fi
+    ;;
+  *)
+    logger "GHub: Invalid usage"
+    echo "Usage: /etc/init.d/buzzer-service {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0

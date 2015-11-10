@@ -1,0 +1,39 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          buzzer-audio-service
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start/stop AllJoyn Buzzer Service
+### END INIT INFO
+
+logger "AllJoyn Buzzer Audio Service: Start script executed"
+SERVICE_PATH="/usr/sbin/buzzer-audio-service"
+
+case "$1" in
+  start)
+    logger "AllJoyn Buzzer Audio Service: Starting"
+    echo "Starting AllJoyn Buzzer Audio Service..."
+    $SERVICE_PATH > /var/log/buzzer-audio-service 2>&1 &
+    echo $! > /var/run/buzzer-audio-service.pid
+    ;;
+  stop)
+    if [ -e /var/run/buzzer-audio-service.pid ]; then
+        logger "AllJoyn Buzzer Audio Service: Stopping"
+        echo "Stopping AllJoyn Buzzer Audio Service..."
+        kill `cat /var/run/buzzer-audio-service.pid`
+        rm /var/run/buzzer-audio-service.pid
+    else
+        logger "AllJoyn Buzzer Audio Service: not running"
+        echo "AllJoyn Buzzer Audio Service: already stopped..."
+    fi
+    ;;
+  *)
+    logger "GHub: Invalid usage"
+    echo "Usage: /etc/init.d/buzzer-audio-service {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0

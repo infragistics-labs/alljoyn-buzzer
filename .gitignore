@@ -1,0 +1,4 @@
+bin/
+obj/
+*.o
+producer-service
